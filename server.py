@@ -1,34 +1,27 @@
 #coding=utf-8
 
 import thriftpy
-from zookclient import ZookClient
 from thriftpy.rpc import make_server
 
-thrift_file = "hi.thrift"
-module_name = "hi_thrift"
+from config import *
+from utils import build_class
+from utils import build_json
 
 microservice_thrift = thriftpy.load(thrift_file, module_name=module_name)
+REQ_CLASS = getattr(microservice_thrift, req_class_name)
+RESP_CLASS = getattr(microservice_thrift, resp_class_name)
 
 class Dispatcher(object):
     def Hi(self, args):
+        """
+        input: args is REQ_CLASS
+        output: resp is RESP_CLASS
+        """
         name = args.Name
-        resp = getattr(microservice_thrift, "HiResponse")(Resp="Your Name is " + name)
+        resp = RESP_CLASS(Resp="Your Name is " + name)
 
         print "doReponse! ", args.Name, resp
         return resp
-
-class RpcServer():
-    def __init__(self,host,port,appname,zookhost):
-        self.port=port
-        self.host=host
-        self.appname=appname
-        self.zookhost=zookhost
-    def startServer(self):
-        server = make_server(microservice_thrift.MicroService, Dispatcher(),
-                             self.host, self.port)
-        client=ZookClient(hosts=self.zookhost)
-        client.register(self.appname, self.port, self.host)
-        server.serve()#启动服务
 
 class ThriftServer():
     def __init__(self, host, port, handler, service_name):
@@ -40,7 +33,7 @@ class ThriftServer():
 
 if __name__=='__main__':
     handler = Dispatcher()
-    server = ThriftServer('127.0.0.1', 1111, handler, "HiService")
+    server = ThriftServer(host, port, handler, service_name)
 
     #print microservice_thrift.__dict__.items()
     #print server.__dict__["server"].__dict__.items()

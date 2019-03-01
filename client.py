@@ -1,26 +1,19 @@
 # -*- coding: utf-8 -*-
 
 import thriftpy
-
 from thriftpy.rpc import client_context,make_client
-from zook import ZookWatcher
 
-thrift_file = "hi.thrift"
-module_name = "hi_thrift"
+import json
+from config import *
+from utils import build_class
+from utils import build_json
 
 microservice_thrift = thriftpy.load(thrift_file, module_name)
+REQ_CLASS = getattr(microservice_thrift, req_class_name)
+RESP_CLASS = getattr(microservice_thrift, resp_class_name)
 
-class RpcClient():
-    def __init__(self, zookhost, appname):
-        self.zookhost=zookhost
-        self.appname=appname
-        self.zookclient=ZookWatcher(hosts=self.zookhost,appname=self.appname)
-
-    def request(self):
-        host,port=self.zookclient.getBalanceNode()
-        with client_context(microservice_thrift.MicroService, host, port) as c:
-            response = c.doResponse(str(port))
-            print(response)
+with open(req_data_file) as fd:
+    req_data = json.loads(fd.read())
 
 class ThriftClient():
     def __init__(self, host, port, service_name):
@@ -28,16 +21,14 @@ class ThriftClient():
         self.client = make_client(self.service, host, port)
 
     def request(self, api_name, req):
-        print self.client._req(api_name, req=req)
+        resp = self.client._req(api_name, req=req)
+        print resp
 
 if __name__=='__main__':
-    client = ThriftClient('127.0.0.1', 1111, "HiService")
+    client = ThriftClient(host, port, service_name)
 
-    #print microservice_thrift.__dict__.items()
-    #print client.__dict__["client"].__dict__.items()
+    #print REQ_CLASS.__dict__
 
-    api_name = "Hi"
-
-    req = getattr(microservice_thrift, "HiRequest")("cc")
+    req = build_class(REQ_CLASS, req_data)
     client.request(api_name, req=req)
 
