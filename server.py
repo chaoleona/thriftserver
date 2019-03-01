@@ -1,4 +1,6 @@
 #coding=utf-8
+import logging
+logging.basicConfig()
 
 import thriftpy
 from thriftpy.rpc import make_server
