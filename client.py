@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import thriftpy
+import thriftpy2 as thriftpy
 from thriftpy.rpc import client_context,make_client
 
 import json
