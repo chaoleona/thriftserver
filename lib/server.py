@@ -5,7 +5,7 @@ logging.basicConfig()
 import sys
 
 import thriftpy2 as thriftpy
-from thriftpy.rpc import make_server
+from thriftpy2.rpc import make_server
 
 from config import *
 from utils import *

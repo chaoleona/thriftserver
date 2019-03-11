@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import thriftpy2 as thriftpy
-from thriftpy.rpc import client_context,make_client
+from thriftpy2.rpc import client_context,make_client
 
 import json
 from config import ConfigParser
@@ -38,5 +38,5 @@ if __name__=='__main__':
         req_data = json.loads(fd.read())
 
     client = ThriftClient("conf/server.conf")
-    client.request(api_name, req_class_name, resp_class_name, req_data)
-
+    resp = client.request(api_name, req_class_name, resp_class_name, req_data)
+    print resp
