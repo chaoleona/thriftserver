@@ -3,3 +3,6 @@ configparser
 apscheduler
 profilehooks
 mysqlclient
+kafka
+msgpack
+

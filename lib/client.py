@@ -7,7 +7,6 @@ from config import ConfigParser
 from utils import build_class
 from utils import build_json
 
-
 class ThriftClient():
     def __init__(self, conf_file):
         parser = ConfigParser(conf_file)

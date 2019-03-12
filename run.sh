@@ -1,3 +1,6 @@
-#python lib/client.py
+# 生产者
+python schedule/run_time.py
 
-python lib/server.py conf/server.conf
+# 消费者
+python kafka_handler/consumer.py
+
